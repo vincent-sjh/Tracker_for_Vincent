@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fitness Tracker - Heatmap Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #0d1117;
+            color: #c9d1d9;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #00d4ff, #ff6b6b);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header p {
+            color: #8b949e;
+            font-size: 1.1rem;
+        }
+
+        .selector-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 30px;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+            background: linear-gradient(135deg, #161b22 0%, #21262d 100%);
+            border-radius: 15px;
+            padding: 25px;
+            border: 1px solid #30363d;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+        }
+
+        .year-selector, .month-selector {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .selector-label {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #8b949e;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+        }
+
+        .year-select, .month-select {
+            background: #ffffff;
+            border: 2px solid #58a6ff;
+            color: #333;
+            padding: 12px 20px;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            outline: none;
+            min-width: 120px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(88, 166, 255, 0.2);
+        }
+
+        .year-select:hover, .month-select:hover {
+            background: #58a6ff;
+            color: #fff;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(88, 166, 255, 0.4);
+        }
+
+        .year-select:focus, .month-select:focus {
+            background: #58a6ff;
+            border-color: #58a6ff;
+            color: #fff;
+            transform: translateY(-2px);
+            box-shadow: 0 0 0 4px rgba(88, 166, 255, 0.3), 0 6px 25px rgba(88, 166, 255, 0.4);
+        }
+
+        /* 美化下拉选项列表 */
+
+        .year-select option, .month-select option {
+            background: #ffffff;
+            color: #333;
+            padding: 10px 15px;
+            font-size: 1rem;
+            font-weight: 500;
+            border: none;
+            margin: 1px 0;
+            line-height: 1.4;
+            border-radius: 8px;
+        }
+
+        /* Webkit/Blink 浏览器的下拉选项样式 */
+        .year-select option:hover, .month-select option:hover {
+            background: #58a6ff !important;
+            color: #fff !important;
+        }
+
+        .year-select option:checked, .month-select option:checked,
+        .year-select option:focus, .month-select option:focus {
+            background: #58a6ff !important;
+            color: #fff !important;
+            font-weight: 600;
+        }
+
+        /* 自定义下拉框样式 - 针对支持的浏览器 */
+        .year-select[size], .month-select[size] {
+            border-radius: 12px;
+            overflow: hidden;
+            background: #ffffff;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        /* 下拉框展开时的圆角样式 */
+        .year-select:focus, .month-select:focus {
+            border-radius: 12px;
+        }
+
+        /* 针对现代浏览器的下拉菜单圆角优化 */
+        .year-select::part(listbox), .month-select::part(listbox) {
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Webkit浏览器下拉菜单样式 */
+        .year-select::-webkit-dropdown-list, .month-select::-webkit-dropdown-list {
+            border-radius: 12px;
+            overflow: hidden;
+            background: #ffffff;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        /* 针对支持的浏览器，美化下拉菜单外观 */
+        .year-select::-webkit-dropdown-button, .month-select::-webkit-dropdown-button {
+            display: block;
+        }
+
+        /* 当下拉菜单展开时的样式 */
+        .year-select:focus::-webkit-scrollbar, .month-select:focus::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .year-select:focus::-webkit-scrollbar-track, .month-select:focus::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 3px;
+        }
+
+        .year-select:focus::-webkit-scrollbar-thumb, .month-select:focus::-webkit-scrollbar-thumb {
+            background: #58a6ff;
+            border-radius: 3px;
+        }
+
+        .year-select:focus::-webkit-scrollbar-thumb:hover, .month-select:focus::-webkit-scrollbar-thumb:hover {
+            background: #4f96ff;
+        }
+
+        /* 使用CSS伪类来模拟下拉列表圆角效果 */
+        .year-select:focus, .month-select:focus {
+            background: #58a6ff;
+            border-color: #58a6ff;
+            color: #fff;
+            transform: translateY(-2px);
+            box-shadow: 0 0 0 4px rgba(88, 166, 255, 0.3), 0 6px 25px rgba(88, 166, 255, 0.4);
+            border-radius: 12px; /* 保持完整圆角 */
+        }
+
+        /* 针对Firefox的特殊处理 */
+        @-moz-document url-prefix() {
+            .year-select option:hover, .month-select option:hover {
+                background-color: #58a6ff !important;
+                color: #fff !important;
+            }
+        }
+
+        .dashboard-grid {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: nowrap;
+        }
+
+        .heatmap-section {
+            background: #161b22;
+            border-radius: 10px;
+            padding: 15px;
+            border: 1px solid #30363d;
+            min-height: 280px;
+            text-align: center;
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .heatmap-title {
+            font-size: 1.4rem;
+            margin-bottom: 19px;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .heatmap-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 25px;
+            align-items: center;
+            justify-content: center;
+            min-height: 150px;
+        }
+
+        .weekday-labels {
+            display: grid;
+            grid-template-columns: repeat(7, 27px);
+            gap: 6px;
+            margin-bottom: 12px;
+            justify-self: center;
+        }
+
+        .weekday-label {
+            width: 27px;
+            height: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            color: #8b949e;
+            text-align: center;
+            font-weight: 500;
+        }
+
+        .heatmap-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 27px);
+            gap: 6px;
+            justify-self: center;
+            justify-content: center;
+        }
+
+        .heatmap-cell {
+            width: 27px;
+            height: 27px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-sizing: border-box;
+            border: 1px solid #30363d;
+        }
+
+        .heatmap-cell:hover {
+            transform: scale(1.15);
+            border: 2px solid #fff !important;
+        }
+
+        /* Exercise colors (Green theme) */
+        .exercise-0 { background-color: transparent; }
+        .exercise-1 { background-color: #0e4429; }
+        .exercise-2 { background-color: #006d32; }
+        .exercise-3 { background-color: #26a641; }
+        .exercise-4 { background-color: #39d353; }
+
+        /* Calorie colors (Orange theme) */
+        .calorie-0 { background-color: transparent; }
+        .calorie-1 { background-color: #4d2d00; }
+        .calorie-2 { background-color: #804d00; }
+        .calorie-3 { background-color: #cc7a00; }
+        .calorie-4 { background-color: #ff9500; }
+
+        /* Discipline colors (Blue theme) */
+        .discipline-0 { background-color: transparent; }
+        .discipline-1 { background-color: #0c2d48; }
+        .discipline-2 { background-color: #144272; }
+        .discipline-3 { background-color: #205295; }
+        .discipline-4 { background-color: #2e86de; }
+
+        /* Overall colors (Purple theme) */
+        .overall-0 { background-color: transparent; }
+        .overall-1 { background-color: #2d00a3; }
+        .overall-2 { background-color: #5e00eb; }
+        .overall-3 { background-color: #8a60f7; }
+        .overall-4 { background-color: #c6b4ff; }
+
+        .legend {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            font-size: 0.75rem;
+            color: #8b949e;
+            margin-top: 10px;
+        }
+
+        .legend-item {
+            width: 10px;
+            height: 10px;
+            border-radius: 2px;
+            border: 1px solid #30363d;
+        }
+
+        .stats-section {
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+            margin-bottom: 25px;
+            flex-wrap: nowrap;
+        }
+
+        .stats-card {
+            background: #161b22;
+            border-radius: 10px;
+            padding: 25px;
+            border: 1px solid #30363d;
+            text-align: center;
+            flex: 1;
+            min-width: 400px;
+        }
+
+        .stats-card h3 {
+            text-align: center;
+            margin-bottom: 19px;
+            font-size: 1.25rem;
+            color: #c9d1d9;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 19px;
+            text-align: center;
+        }
+
+        .stat-item {
+            background: #21262d;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #30363d;
+        }
+
+        .stat-value {
+            font-size: 1.9rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            color: #8b949e;
+            font-size: 0.9rem;
+        }
+
+        .tooltip {
+            position: absolute;
+            background: #21262d;
+            border: 1px solid #30363d;
+            border-radius: 6px;
+            padding: 8px 12px;
+            font-size: 0.8rem;
+            pointer-events: none;
+            z-index: 1000;
+            display: none;
+        }
+
+        @media (max-width: 1400px) {
+            .dashboard-grid {
+                flex-wrap: wrap;
+            }
+            
+            .heatmap-section {
+                min-width: 45%;
+            }
+        }
+
+        @media (max-width: 1000px) {
+            .stats-section {
+                flex-wrap: wrap;
+            }
+            
+            .stats-card {
+                min-width: 45%;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-grid {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .stats-section {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .heatmap-section {
+                min-width: 100%;
+            }
+            
+            .stats-card {
+                min-width: 100%;
+            }
+            
+            .selector-container {
+                gap: 20px;
+                margin-bottom: 30px;
+                padding: 20px;
+            }
+            
+            .year-select, .month-select {
+                padding: 10px 16px;
+                font-size: 0.9rem;
+                min-width: 100px;
+            }
+            
+            .heatmap-cell {
+                width: 18px;
+                height: 18px;
+                border: 1px solid #30363d;
+            }
+            
+            .weekday-labels {
+                grid-template-columns: repeat(7, 18px);
+                gap: 4px;
+                justify-self: center;
+            }
+            
+            .heatmap-grid {
+                grid-template-columns: repeat(7, 18px);
+                gap: 4px;
+                justify-self: center;
+                justify-content: center;
+            }
+            
+            .weekday-label {
+                width: 18px;
+                font-size: 0.65rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Fitness Tracker Dashboard</h1>
+            <p>Track your daily Exercise, Calorie, and Discipline scores</p>
+        </div>
+
+        <div class="selector-container">
+            <div class="year-selector" id="year-selector">
+                <div class="selector-label">Year</div>
+                <select id="year-select" class="year-select">
+                    <!-- Year options will be dynamically generated -->
+                </select>
+            </div>
+
+            <div class="month-selector">
+                <div class="selector-label">Month</div>
+                <select id="month-select" class="month-select">
+                    <option value="0">January</option>
+                    <option value="1">February</option>
+                    <option value="2">March</option>
+                    <option value="3">April</option>
+                    <option value="4">May</option>
+                    <option value="5">June</option>
+                    <option value="6">July</option>
+                    <option value="7">August</option>
+                    <option value="8">September</option>
+                    <option value="9">October</option>
+                    <option value="10">November</option>
+                    <option value="11">December</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="dashboard-grid">
+            <div class="heatmap-section">
+                <h2 class="heatmap-title" style="color: #39d353;">Exercise</h2>
+                <div class="heatmap-container">
+                    <div class="weekday-labels">
+                        <div class="weekday-label">Mon</div>
+                        <div class="weekday-label">Tue</div>
+                        <div class="weekday-label">Wed</div>
+                        <div class="weekday-label">Thu</div>
+                        <div class="weekday-label">Fri</div>
+                        <div class="weekday-label">Sat</div>
+                        <div class="weekday-label">Sun</div>
+                    </div>
+                    <div id="exercise-heatmap" class="heatmap-grid"></div>
+                </div>
+                <div class="legend">
+                    <span>Less</span>
+                    <div class="legend-item exercise-0"></div>
+                    <div class="legend-item exercise-1"></div>
+                    <div class="legend-item exercise-2"></div>
+                    <div class="legend-item exercise-3"></div>
+                    <div class="legend-item exercise-4"></div>
+                    <span>More</span>
+                </div>
+            </div>
+
+            <div class="heatmap-section">
+                <h2 class="heatmap-title" style="color: #ff9500;">Calorie</h2>
+                <div class="heatmap-container">
+                    <div class="weekday-labels">
+                        <div class="weekday-label">Mon</div>
+                        <div class="weekday-label">Tue</div>
+                        <div class="weekday-label">Wed</div>
+                        <div class="weekday-label">Thu</div>
+                        <div class="weekday-label">Fri</div>
+                        <div class="weekday-label">Sat</div>
+                        <div class="weekday-label">Sun</div>
+                    </div>
+                    <div id="calorie-heatmap" class="heatmap-grid"></div>
+                </div>
+                <div class="legend">
+                    <span>Less</span>
+                    <div class="legend-item calorie-0"></div>
+                    <div class="legend-item calorie-1"></div>
+                    <div class="legend-item calorie-2"></div>
+                    <div class="legend-item calorie-3"></div>
+                    <div class="legend-item calorie-4"></div>
+                    <span>More</span>
+                </div>
+            </div>
+
+            <div class="heatmap-section">
+                <h2 class="heatmap-title" style="color: #2e86de;">Discipline</h2>
+                <div class="heatmap-container">
+                    <div class="weekday-labels">
+                        <div class="weekday-label">Mon</div>
+                        <div class="weekday-label">Tue</div>
+                        <div class="weekday-label">Wed</div>
+                        <div class="weekday-label">Thu</div>
+                        <div class="weekday-label">Fri</div>
+                        <div class="weekday-label">Sat</div>
+                        <div class="weekday-label">Sun</div>
+                    </div>
+                    <div id="discipline-heatmap" class="heatmap-grid"></div>
+                </div>
+                <div class="legend">
+                    <span>Less</span>
+                    <div class="legend-item discipline-0"></div>
+                    <div class="legend-item discipline-1"></div>
+                    <div class="legend-item discipline-2"></div>
+                    <div class="legend-item discipline-3"></div>
+                    <div class="legend-item discipline-4"></div>
+                    <span>More</span>
+                </div>
+            </div>
+
+            <div class="heatmap-section">
+                <h2 class="heatmap-title" style="color: #a663cc;">Overall Average</h2>
+                <div class="heatmap-container">
+                    <div class="weekday-labels">
+                        <div class="weekday-label">Mon</div>
+                        <div class="weekday-label">Tue</div>
+                        <div class="weekday-label">Wed</div>
+                        <div class="weekday-label">Thu</div>
+                        <div class="weekday-label">Fri</div>
+                        <div class="weekday-label">Sat</div>
+                        <div class="weekday-label">Sun</div>
+                    </div>
+                    <div id="overall-heatmap" class="heatmap-grid"></div>
+                </div>
+                <div class="legend">
+                    <span>Less</span>
+                    <div class="legend-item overall-0"></div>
+                    <div class="legend-item overall-1"></div>
+                    <div class="legend-item overall-2"></div>
+                    <div class="legend-item overall-3"></div>
+                    <div class="legend-item overall-4"></div>
+                    <span>More</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="stats-section">
+            <div class="stats-card">
+                <h3>Current Month Statistics</h3>
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-value" id="current-avg-exercise" style="color: #39d353;">0</div>
+                        <div class="stat-label">Avg Exercise</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="current-avg-calorie" style="color: #ff9500;">0</div>
+                        <div class="stat-label">Avg Calorie</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="current-avg-discipline" style="color: #2e86de;">0</div>
+                        <div class="stat-label">Avg Discipline</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="current-avg-overall" style="color: #a663cc;">0</div>
+                        <div class="stat-label">Overall Avg</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="current-total-days">0</div>
+                        <div class="stat-label">Active Days</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="current-streak">0</div>
+                        <div class="stat-label">Current Streak</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="stats-card">
+                <h3>All Time Statistics</h3>
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-value" id="all-avg-exercise" style="color: #39d353;">0</div>
+                        <div class="stat-label">Avg Exercise</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="all-avg-calorie" style="color: #ff9500;">0</div>
+                        <div class="stat-label">Avg Calorie</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="all-avg-discipline" style="color: #2e86de;">0</div>
+                        <div class="stat-label">Avg Discipline</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="all-avg-overall" style="color: #a663cc;">0</div>
+                        <div class="stat-label">Overall Avg</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="all-total-days">0</div>
+                        <div class="stat-label">Total Days</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="all-best-streak">0</div>
+                        <div class="stat-label">Best Streak</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="tooltip" class="tooltip"></div>
+
+    <script src="script.js"></script>
+</body>
+</html>
