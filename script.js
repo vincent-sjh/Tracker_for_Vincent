@@ -297,9 +297,9 @@ class FitnessTracker {
     calculateCurrentMonthStats() {
         // Filter data for current month
         const monthData = Object.entries(this.data).filter(([dateStr]) => {
+            // 修正日期解析，不要减一天
             const [year, month, day] = dateStr.split('-').map(Number);
-            const date = new Date(year, month - 1, day - 1);
-            return date.getFullYear() === this.currentYear && date.getMonth() === this.currentMonth;
+            return year === this.currentYear && (month - 1) === this.currentMonth;
         });
 
         const values = monthData.map(([_, data]) => data);
@@ -311,7 +311,7 @@ class FitnessTracker {
                 avgDiscipline: 0,
                 avgOverall: 0,
                 totalDays: 0,
-                bestStreak: 0 // 修改为 bestStreak
+                bestStreak: 0
             };
         }
 
@@ -342,6 +342,7 @@ class FitnessTracker {
 
     // Calculate all-time statistics
     calculateAllTimeStats() {
+        // 修正日期解析，不要减一天
         const values = Object.values(this.data);
 
         if (values.length === 0) {
@@ -391,7 +392,7 @@ class FitnessTracker {
         document.getElementById('current-avg-discipline').textContent = currentStats.avgDiscipline;
         document.getElementById('current-avg-overall').textContent = currentStats.avgOverall;
         document.getElementById('current-total-days').textContent = currentStats.totalDays;
-        document.getElementById('current-streak').textContent = currentStats.bestStreak; // 修改为 bestStreak
+        document.getElementById('current-perfect-days').textContent = currentStats.bestStreak;
 
         // Update all-time stats
         document.getElementById('all-avg-exercise').textContent = allTimeStats.avgExercise;
@@ -399,7 +400,7 @@ class FitnessTracker {
         document.getElementById('all-avg-discipline').textContent = allTimeStats.avgDiscipline;
         document.getElementById('all-avg-overall').textContent = allTimeStats.avgOverall;
         document.getElementById('all-total-days').textContent = allTimeStats.totalDays;
-        document.getElementById('all-best-streak').textContent = allTimeStats.bestStreak;
+        document.getElementById('all-perfect-days').textContent = allTimeStats.bestStreak;
     }
 
     // Setup tooltip functionality
