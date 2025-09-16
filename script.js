@@ -297,14 +297,13 @@ class FitnessTracker {
     calculateCurrentMonthStats() {
         // Filter data for current month
         const monthData = Object.entries(this.data).filter(([dateStr]) => {
-            // Parse date string and adjust for timezone offset
             const [year, month, day] = dateStr.split('-').map(Number);
-            const date = new Date(year, month - 1, day - 1); // Subtract 1 day to fix timezone issue
+            const date = new Date(year, month - 1, day - 1);
             return date.getFullYear() === this.currentYear && date.getMonth() === this.currentMonth;
         });
-        
+
         const values = monthData.map(([_, data]) => data);
-        
+
         if (values.length === 0) {
             return {
                 avgExercise: 0,
@@ -312,7 +311,7 @@ class FitnessTracker {
                 avgDiscipline: 0,
                 avgOverall: 0,
                 totalDays: 0,
-                currentStreak: 0
+                bestStreak: 0 // 修改为 bestStreak
             };
         }
 
@@ -328,25 +327,8 @@ class FitnessTracker {
         const avgDiscipline = (totals.discipline / values.length).toFixed(1);
         const avgOverall = ((totals.exercise + totals.calorie + totals.discipline) / (values.length * 3)).toFixed(1);
 
-        // Calculate current streak from the end of current month
-        const sortedDates = monthData.map(([dateStr]) => dateStr).sort();
-        let currentStreak = 0;
-        
-        // Find consecutive days from the most recent date
-        for (let i = sortedDates.length - 1; i >= 0; i--) {
-            // Parse date string and adjust for timezone offset
-            const [year, month, day] = sortedDates[i].split('-').map(Number);
-            const currentDate = new Date(year, month - 1, day - 1); // Subtract 1 day to fix timezone issue
-            
-            const [lastYear, lastMonth, lastDay] = sortedDates[sortedDates.length - 1].split('-').map(Number);
-            const expectedDate = new Date(lastYear, lastMonth - 1, lastDay - 1 - (sortedDates.length - 1 - i));
-            
-            if (currentDate.getTime() === expectedDate.getTime()) {
-                currentStreak++;
-            } else {
-                break;
-            }
-        }
+        // 统计三项全是10的满分天数
+        const bestStreak = values.filter(day => day.exercise === 10 && day.calorie === 10 && day.discipline === 10).length;
 
         return {
             avgExercise,
@@ -354,14 +336,14 @@ class FitnessTracker {
             avgDiscipline,
             avgOverall,
             totalDays: values.length,
-            currentStreak
+            bestStreak
         };
     }
 
     // Calculate all-time statistics
     calculateAllTimeStats() {
         const values = Object.values(this.data);
-        
+
         if (values.length === 0) {
             return {
                 avgExercise: 0,
@@ -385,33 +367,8 @@ class FitnessTracker {
         const avgDiscipline = (totals.discipline / values.length).toFixed(1);
         const avgOverall = ((totals.exercise + totals.calorie + totals.discipline) / (values.length * 3)).toFixed(1);
 
-        // Calculate best streak
-        const sortedDates = Object.keys(this.data).sort();
-        let bestStreak = 0;
-        let currentStreak = 0;
-        let previousDate = null;
-        
-        sortedDates.forEach(dateStr => {
-            // Parse date string and adjust for timezone offset
-            const [year, month, day] = dateStr.split('-').map(Number);
-            const currentDate = new Date(year, month - 1, day - 1); // Subtract 1 day to fix timezone issue
-            
-            if (previousDate) {
-                const daysDiff = Math.floor((currentDate - previousDate) / (1000 * 60 * 60 * 24));
-                if (daysDiff === 1) {
-                    currentStreak++;
-                } else {
-                    bestStreak = Math.max(bestStreak, currentStreak);
-                    currentStreak = 1;
-                }
-            } else {
-                currentStreak = 1;
-            }
-            
-            previousDate = currentDate;
-        });
-        
-        bestStreak = Math.max(bestStreak, currentStreak);
+        // 统计三项全是10的满分天数
+        const bestStreak = values.filter(day => day.exercise === 10 && day.calorie === 10 && day.discipline === 10).length;
 
         return {
             avgExercise,
@@ -427,15 +384,15 @@ class FitnessTracker {
     updateStats() {
         const currentStats = this.calculateCurrentMonthStats();
         const allTimeStats = this.calculateAllTimeStats();
-        
+
         // Update current month stats
         document.getElementById('current-avg-exercise').textContent = currentStats.avgExercise;
         document.getElementById('current-avg-calorie').textContent = currentStats.avgCalorie;
         document.getElementById('current-avg-discipline').textContent = currentStats.avgDiscipline;
         document.getElementById('current-avg-overall').textContent = currentStats.avgOverall;
         document.getElementById('current-total-days').textContent = currentStats.totalDays;
-        document.getElementById('current-streak').textContent = currentStats.currentStreak;
-        
+        document.getElementById('current-streak').textContent = currentStats.bestStreak; // 修改为 bestStreak
+
         // Update all-time stats
         document.getElementById('all-avg-exercise').textContent = allTimeStats.avgExercise;
         document.getElementById('all-avg-calorie').textContent = allTimeStats.avgCalorie;
