@@ -10,7 +10,8 @@ const fitnessData = {
     "2025-09-19": { exercise: 10, calorie: 0, discipline: 0 },
     "2025-09-20": { exercise: 10, calorie: 5, discipline: 0 },
     "2025-09-21": { exercise: 0, calorie: 5, discipline: 0 },
-    "2025-09-22": { exercise: 0, calorie: 10, discipline: 0 }
+    "2025-09-22": { exercise: 0, calorie: 10, discipline: 0 },
+    "2025-09-23": { exercise: 10, calorie: 5, discipline: 0 }
 };
 
 class FitnessTracker {
