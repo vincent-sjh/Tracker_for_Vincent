@@ -18,6 +18,7 @@ const fitnessData = {
     "2025-09-27": { exercise: 0, calorie: 5, discipline: 0 },
     "2025-09-28": { exercise: 10, calorie: 5, discipline: 10 },
     "2025-09-29": { exercise: 10, calorie: 5, discipline: 10 },
+    "2025-09-30": { exercise: 0, calorie: 5, discipline: 10 }
 };
 
 class FitnessTracker {
@@ -336,20 +337,20 @@ class FitnessTracker {
             return acc;
         }, { exercise: 0, calorie: 0, discipline: 0 });
 
-        const avgExercise = (totals.exercise / values.length).toFixed(1);
-        const avgCalorie = (totals.calorie / values.length).toFixed(1);
-        const avgDiscipline = (totals.discipline / values.length).toFixed(1);
-        const avgOverall = ((totals.exercise + totals.calorie + totals.discipline) / (values.length * 3)).toFixed(1);
+        const avgExercise = (totals.exercise / values.length).toFixed(2);
+        const avgCalorie = (totals.calorie / values.length).toFixed(2);
+        const avgDiscipline = (totals.discipline / values.length).toFixed(2);
+        const avgOverall = ((totals.exercise + totals.calorie + totals.discipline) / (values.length * 3)).toFixed(2);
 
         // 统计三项全是10的满分天数
-        const bestStreak = values.filter(day => day.exercise === 10 && day.calorie === 10 && day.discipline === 10).length;
+        const bestStreak = values.filter(day => day.exercise === 10 && day.calorie === 10 && day.discipline === 10).length.toFixed(2);
 
         return {
             avgExercise,
             avgCalorie,
             avgDiscipline,
             avgOverall,
-            totalDays: values.length,
+            totalDays: values.length.toFixed(2),
             bestStreak
         };
     }
@@ -377,20 +378,20 @@ class FitnessTracker {
             return acc;
         }, { exercise: 0, calorie: 0, discipline: 0 });
 
-        const avgExercise = (totals.exercise / values.length).toFixed(1);
-        const avgCalorie = (totals.calorie / values.length).toFixed(1);
-        const avgDiscipline = (totals.discipline / values.length).toFixed(1);
-        const avgOverall = ((totals.exercise + totals.calorie + totals.discipline) / (values.length * 3)).toFixed(1);
+        const avgExercise = (totals.exercise / values.length).toFixed(2);
+        const avgCalorie = (totals.calorie / values.length).toFixed(2);
+        const avgDiscipline = (totals.discipline / values.length).toFixed(2);
+        const avgOverall = ((totals.exercise + totals.calorie + totals.discipline) / (values.length * 3)).toFixed(2);
 
         // 统计三项全是10的满分天数
-        const bestStreak = values.filter(day => day.exercise === 10 && day.calorie === 10 && day.discipline === 10).length;
+        const bestStreak = values.filter(day => day.exercise === 10 && day.calorie === 10 && day.discipline === 10).length.toFixed(2);
 
         return {
             avgExercise,
             avgCalorie,
             avgDiscipline,
             avgOverall,
-            totalDays: values.length,
+            totalDays: values.length.toFixed(2),
             bestStreak
         };
     }
