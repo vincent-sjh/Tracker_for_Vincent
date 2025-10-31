@@ -380,7 +380,7 @@ class FitnessTracker {
     if (allEl) allEl.textContent = allTimeStats.exerciseDays;
   }
 
-  // Setup tooltip functionality - 仅显示 exercise 值
+  // Setup tooltip functionality - show only exercise
   setupTooltips() {
     const cells = document.querySelectorAll(".heatmap-cell");
 
@@ -390,17 +390,19 @@ class FitnessTracker {
         const date = target.dataset.date || "";
         const dayName = target.dataset.dayName || "";
         const monthName = target.dataset.monthName || "";
+        const day = target.dataset.day || "";
         const exercise = target.dataset.exercise || "0";
 
         let formattedDate = "";
         if (date) {
           const parts = date.split("-");
-          formattedDate = `${dayName}, ${monthName} ${parseInt(parts[2], 10)}, ${parts[0]}`;
+          // 直接使用 dataset.day 而不是从 date 字符串解析
+          formattedDate = `${dayName}, ${monthName} ${day}, ${parts[0]}`;
         }
 
         this.tooltip.innerHTML = `
-          <div style="font-weight:700;margin-bottom:6px;">${formattedDate}</div>
-          <div>Exercise: ${exercise}/10</div>
+          <div class="tooltip-date">${formattedDate}</div>
+          <div class="tooltip-value">Exercise: ${exercise}/10</div>
         `;
 
         this.tooltip.style.display = "block";
