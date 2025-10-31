@@ -2,36 +2,39 @@
 const fitnessData = {
   "2025-09-12": { exercise: 10, calorie: 0, discipline: 0 },
   "2025-09-13": { exercise: 0, calorie: 0, discipline: 0 },
-  "2025-09-14": { exercise: 10, calorie: 5, discipline: 5 },
-  "2025-09-15": { exercise: 10, calorie: 10, discipline: 10 },
-  "2025-09-16": { exercise: 0, calorie: 10, discipline: 5 },
+  "2025-09-14": { exercise: 10, calorie: 0, discipline: 0 },
+  "2025-09-15": { exercise: 10, calorie: 0, discipline: 0 },
+  "2025-09-16": { exercise: 0, calorie: 0, discipline: 0 },
   "2025-09-17": { exercise: 10, calorie: 0, discipline: 0 },
-  "2025-09-18": { exercise: 10, calorie: 10, discipline: 10 },
+  "2025-09-18": { exercise: 10, calorie: 0, discipline: 0 },
   "2025-09-19": { exercise: 10, calorie: 0, discipline: 0 },
-  "2025-09-20": { exercise: 10, calorie: 5, discipline: 0 },
-  "2025-09-21": { exercise: 0, calorie: 5, discipline: 0 },
-  "2025-09-22": { exercise: 0, calorie: 10, discipline: 0 },
-  "2025-09-23": { exercise: 10, calorie: 5, discipline: 0 },
-  "2025-09-24": { exercise: 10, calorie: 5, discipline: 0 },
-  "2025-09-25": { exercise: 10, calorie: 5, discipline: 0 },
-  "2025-09-26": { exercise: 0, calorie: 5, discipline: 0 },
-  "2025-09-27": { exercise: 0, calorie: 5, discipline: 0 },
-  "2025-09-28": { exercise: 10, calorie: 5, discipline: 10 },
-  "2025-09-29": { exercise: 0, calorie: 5, discipline: 10 },
+  "2025-09-20": { exercise: 10, calorie: 0, discipline: 0 },
+  "2025-09-21": { exercise: 0, calorie: 0, discipline: 0 },
+  "2025-09-22": { exercise: 0, calorie: 0, discipline: 0 },
+  "2025-09-23": { exercise: 10, calorie: 0, discipline: 0 },
+  "2025-09-24": { exercise: 10, calorie: 0, discipline: 0 },
+  "2025-09-25": { exercise: 10, calorie: 0, discipline: 0 },
+  "2025-09-26": { exercise: 0, calorie: 0, discipline: 0 },
+  "2025-09-27": { exercise: 0, calorie: 0, discipline: 0 },
+  "2025-09-28": { exercise: 10, calorie: 0, discipline: 0 },
+  "2025-09-29": { exercise: 0, calorie: 0, discipline: 0 },
   "2025-09-30": { exercise: 0, calorie: 0, discipline: 0 },
-  "2025-10-10": { exercise: 10, calorie: 5, discipline: 0 },
-  "2025-10-11": { exercise: 10, calorie: 0, discipline: 10 },
+  "2025-10-10": { exercise: 10, calorie: 0, discipline: 0 },
+  "2025-10-11": { exercise: 10, calorie: 0, discipline: 0 },
   "2025-10-12": { exercise: 10, calorie: 0, discipline: 0 },
-  "2025-10-13": { exercise: 0, calorie: 5, discipline: 10 },
-  "2025-10-14": { exercise: 0, calorie: 5, discipline: 10 },
-  "2025-10-15": { exercise: 10, calorie: 5, discipline: 0 },
-  "2025-10-16": { exercise: 10, calorie: 5, discipline: 0 },
-  "2025-10-17": { exercise: 10, calorie: 5, discipline: 0 },
-  "2025-10-18": { exercise: 0, calorie: 5, discipline: 0 },
-  "2025-10-19": { exercise: 10, calorie: 5, discipline: 0 },
-  "2025-10-20": { exercise: 0, calorie: 5, discipline: 0 },
-  "2025-10-21": { exercise: 10, calorie: 5, discipline: 0 },
-  "2025-10-22": { exercise: 10, calorie: 5, discipline: 0 }
+  "2025-10-13": { exercise: 0, calorie: 0, discipline: 0 },
+  "2025-10-14": { exercise: 0, calorie: 0, discipline: 0 },
+  "2025-10-15": { exercise: 10, calorie: 0, discipline: 0 },
+  "2025-10-16": { exercise: 10, calorie: 0, discipline: 0 },
+  "2025-10-17": { exercise: 10, calorie: 0, discipline: 0 },
+  "2025-10-18": { exercise: 0, calorie: 0, discipline: 0 },
+  "2025-10-19": { exercise: 10, calorie: 0, discipline: 0 },
+  "2025-10-20": { exercise: 0, calorie: 0, discipline: 0 },
+  "2025-10-21": { exercise: 10, calorie: 0, discipline: 0 },
+  "2025-10-22": { exercise: 10, calorie: 0, discipline: 0 },
+  "2025-10-29": { exercise: 10, calorie: 0, discipline: 0 },
+  "2025-10-30": { exercise: 10, calorie: 0, discipline: 0 },
+  "2025-10-31": { exercise: 10, calorie: 0, discipline: 0 }
 };
 
 class FitnessTracker {
@@ -332,196 +335,80 @@ class FitnessTracker {
     }
   }
 
-  // Render all heatmaps
+  // Render all heatmaps -> 修改为只渲染 exercise heatmap
   renderHeatmaps() {
     this.renderHeatmap("exercise-heatmap", "exercise");
-    this.renderHeatmap("calorie-heatmap", "calorie");
-    this.renderHeatmap("discipline-heatmap", "discipline");
-    this.renderHeatmap("overall-heatmap", "overall");
+    // calorie/discipline/overall heatmaps removed
   }
 
-  // Calculate statistics for current month
+  // Calculate statistics for current month: count days where exercise > 0
   calculateCurrentMonthStats() {
-    // Filter data for current month
     const monthData = Object.entries(this.data).filter(([dateStr]) => {
-      // 修正日期解析，不要减一天
-      const [year, month, day] = dateStr.split("-").map(Number);
-      return year === this.currentYear && month - 1 === this.currentMonth;
+      const [year, month] = dateStr.split("-").map(Number);
+      return year === this.currentYear && (month - 1) === this.currentMonth;
     });
 
-    const values = monthData.map(([_, data]) => data);
-
-    if (values.length === 0) {
-      return {
-        avgExercise: 0,
-        avgCalorie: 0,
-        avgDiscipline: 0,
-        avgOverall: 0,
-        totalDays: 0,
-        bestStreak: 0,
-      };
-    }
-
-    const totals = values.reduce(
-      (acc, day) => {
-        acc.exercise += day.exercise;
-        acc.calorie += day.calorie;
-        acc.discipline += day.discipline;
-        return acc;
-      },
-      { exercise: 0, calorie: 0, discipline: 0 },
-    );
-
-    const avgExercise = (totals.exercise / values.length).toFixed(2);
-    const avgCalorie = (totals.calorie / values.length).toFixed(2);
-    const avgDiscipline = (totals.discipline / values.length).toFixed(2);
-    const avgOverall = (
-      (totals.exercise + totals.calorie + totals.discipline) /
-      (values.length * 3)
-    ).toFixed(2);
-
-    // 统计三项全是10的满分天数
-    const bestStreak = values
-      .filter(
-        (day) =>
-          day.exercise === 10 && day.calorie === 10 && day.discipline === 10,
-      )
-      .length.toFixed(2);
+    const exerciseDaysCount = monthData.reduce((acc, [, data]) => {
+      return acc + ((data && Number(data.exercise) > 0) ? 1 : 0);
+    }, 0);
 
     return {
-      avgExercise,
-      avgCalorie,
-      avgDiscipline,
-      avgOverall,
-      totalDays: values.length.toFixed(2),
-      bestStreak,
+      exerciseDays: exerciseDaysCount.toFixed(2) // 两位小数显示
     };
   }
 
-  // Calculate all-time statistics
+  // Calculate all-time statistics: count days where exercise > 0
   calculateAllTimeStats() {
-    // 修正日期解析，不要减一天
     const values = Object.values(this.data);
-
-    if (values.length === 0) {
-      return {
-        avgExercise: 0,
-        avgCalorie: 0,
-        avgDiscipline: 0,
-        avgOverall: 0,
-        totalDays: 0,
-        bestStreak: 0,
-      };
-    }
-
-    const totals = values.reduce(
-      (acc, day) => {
-        acc.exercise += day.exercise;
-        acc.calorie += day.calorie;
-        acc.discipline += day.discipline;
-        return acc;
-      },
-      { exercise: 0, calorie: 0, discipline: 0 },
-    );
-
-    const avgExercise = (totals.exercise / values.length).toFixed(2);
-    const avgCalorie = (totals.calorie / values.length).toFixed(2);
-    const avgDiscipline = (totals.discipline / values.length).toFixed(2);
-    const avgOverall = (
-      (totals.exercise + totals.calorie + totals.discipline) /
-      (values.length * 3)
-    ).toFixed(2);
-
-    // 统计三项全是10的满分天数
-    const bestStreak = values
-      .filter(
-        (day) =>
-          day.exercise === 10 && day.calorie === 10 && day.discipline === 10,
-      )
-      .length.toFixed(2);
+    const exerciseDaysCount = values.reduce((acc, data) => {
+      return acc + ((data && Number(data.exercise) > 0) ? 1 : 0);
+    }, 0);
 
     return {
-      avgExercise,
-      avgCalorie,
-      avgDiscipline,
-      avgOverall,
-      totalDays: values.length.toFixed(2),
-      bestStreak,
+      exerciseDays: exerciseDaysCount.toFixed(2) // 两位小数显示
     };
   }
 
-  // Update statistics display
+  // Update statistics display (只更新 exercise 计数)
   updateStats() {
     const currentStats = this.calculateCurrentMonthStats();
     const allTimeStats = this.calculateAllTimeStats();
 
-    // Update current month stats
-    document.getElementById("current-avg-exercise").textContent =
-      currentStats.avgExercise;
-    document.getElementById("current-avg-calorie").textContent =
-      currentStats.avgCalorie;
-    document.getElementById("current-avg-discipline").textContent =
-      currentStats.avgDiscipline;
-    document.getElementById("current-avg-overall").textContent =
-      currentStats.avgOverall;
-    document.getElementById("current-total-days").textContent =
-      currentStats.totalDays;
-    document.getElementById("current-perfect-days").textContent =
-      currentStats.bestStreak;
-
-    // Update all-time stats
-    document.getElementById("all-avg-exercise").textContent =
-      allTimeStats.avgExercise;
-    document.getElementById("all-avg-calorie").textContent =
-      allTimeStats.avgCalorie;
-    document.getElementById("all-avg-discipline").textContent =
-      allTimeStats.avgDiscipline;
-    document.getElementById("all-avg-overall").textContent =
-      allTimeStats.avgOverall;
-    document.getElementById("all-total-days").textContent =
-      allTimeStats.totalDays;
-    document.getElementById("all-perfect-days").textContent =
-      allTimeStats.bestStreak;
+    const curEl = document.getElementById("current-exercise-days");
+    const allEl = document.getElementById("all-exercise-days");
+    if (curEl) curEl.textContent = currentStats.exerciseDays;
+    if (allEl) allEl.textContent = allTimeStats.exerciseDays;
   }
 
-  // Setup tooltip functionality
+  // Setup tooltip functionality - 仅显示 exercise 值
   setupTooltips() {
     const cells = document.querySelectorAll(".heatmap-cell");
 
     cells.forEach((cell) => {
       cell.addEventListener("mouseenter", (e) => {
-        const date = e.target.dataset.date;
-        const dayName = e.target.dataset.dayName;
-        const monthName = e.target.dataset.monthName;
-        const exercise = e.target.dataset.exercise || "0";
-        const calorie = e.target.dataset.calorie || "0";
-        const discipline = e.target.dataset.discipline || "0";
-        const overall = e.target.dataset.overall || "0";
+        const target = e.currentTarget;
+        const date = target.dataset.date || "";
+        const dayName = target.dataset.dayName || "";
+        const monthName = target.dataset.monthName || "";
+        const exercise = target.dataset.exercise || "0";
 
-        const [year, month, day] = date.split("-");
-        const formattedDate = `${dayName}, ${monthName} ${parseInt(day)}, ${year}`;
+        let formattedDate = "";
+        if (date) {
+          const parts = date.split("-");
+          formattedDate = `${dayName}, ${monthName} ${parseInt(parts[2], 10)}, ${parts[0]}`;
+        }
 
         this.tooltip.innerHTML = `
-                    <div style="font-weight: bold; margin-bottom: 5px;">${formattedDate}</div>
-                    <div>Exercise: ${exercise}/10</div>
-                    <div>Calorie: ${calorie}/10</div>
-                    <div>Discipline: ${discipline}/10</div>
-                    <div style="border-top: 1px solid #30363d; margin-top: 5px; padding-top: 5px;">
-                        Overall: ${overall}/10
-                    </div>
-                `;
+          <div style="font-weight:700;margin-bottom:6px;">${formattedDate}</div>
+          <div>Exercise: ${exercise}/10</div>
+        `;
 
         this.tooltip.style.display = "block";
         this.updateTooltipPosition(e);
       });
 
-      cell.addEventListener("mousemove", (e) => {
-        this.updateTooltipPosition(e);
-      });
-
-      cell.addEventListener("mouseleave", () => {
-        this.tooltip.style.display = "none";
-      });
+      cell.addEventListener("mousemove", (e) => this.updateTooltipPosition(e));
+      cell.addEventListener("mouseleave", () => { this.tooltip.style.display = "none"; });
     });
   }
 
