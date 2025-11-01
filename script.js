@@ -22,7 +22,7 @@ const fitnessData = {
   "2025-10-22": { exercise: 10},
   "2025-10-29": { exercise: 10},
   "2025-10-30": { exercise: 10},
-  "2025-10-31": { exercise: 10}
+  "2025-11-01": { exercise: 10}
 };
 
 class FitnessTracker {
