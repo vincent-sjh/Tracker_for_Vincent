@@ -46,10 +46,8 @@ class FitnessTracker {
   getAvailableYears() {
     const years = new Set();
     Object.keys(this.data).forEach((dateStr) => {
-      // Parse date string and adjust for timezone offset
-      const [year, month, day] = dateStr.split("-").map(Number);
-      const date = new Date(year, month - 1, day - 1); // Subtract 1 day to fix timezone issue
-      years.add(date.getFullYear());
+      const [year] = dateStr.split("-").map(Number);
+      years.add(year);
     });
     return Array.from(years).sort((a, b) => b - a); // Sort descending (newest first)
   }
@@ -97,11 +95,9 @@ class FitnessTracker {
   getAvailableMonths() {
     const months = new Set();
     Object.keys(this.data).forEach((dateStr) => {
-      // Parse date string and adjust for timezone offset
-      const [year, month, day] = dateStr.split("-").map(Number);
-      const date = new Date(year, month - 1, day - 1); // Subtract 1 day to fix timezone issue
-      if (date.getFullYear() === this.currentYear) {
-        months.add(date.getMonth());
+      const [year, month] = dateStr.split("-").map(Number);
+      if (year === this.currentYear) {
+        months.add(month - 1); // JavaScript月份是0-based (0=Jan, 11=Dec)
       }
     });
     return Array.from(months).sort((a, b) => a - b);
