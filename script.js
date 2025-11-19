@@ -296,7 +296,7 @@ class FitnessTracker {
 
         this.tooltip.innerHTML = `
           <div class="tooltip-date">${formattedDate}</div>
-          <div class="tooltip-value">${isLogged ? "✓ Active" : "Inactive"}</div>
+          <div class="tooltip-value">${isLogged ? "✓ Active" : "✗ Inactive"}</div>
         `;
 
         this.tooltip.style.display = "block";
