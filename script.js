@@ -112,6 +112,7 @@ const fitnessData = [
   "2026-05-12",
   "2026-06-17",
   "2026-06-21",
+  "2026-06-23",
 ];
 
 class FitnessTracker {
